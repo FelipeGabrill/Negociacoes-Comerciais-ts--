@@ -46,7 +46,18 @@ export class NegociacaoController {
     }
 
     public importaDados(): void {
-        alert('oi');
+        fetch('http://localhost:8080/dados')
+            .then(res => res.json())
+            .then((dados: any[]) => {
+                return dados.map(dadoHoje => {
+                    return new Negociacao(new Date(), dadoHoje.vezes, dadoHoje.montante);
+                });
+            }).then(negociacoesHoje => {
+                for(let negociacao of negociacoesHoje) {
+                    this.negociacoes.adiciona(negociacao);
+                }
+                this.negociacoesView.update(this.negociacoes);
+            });
     }
 
     private ehDiaUtil(data: Date) {
